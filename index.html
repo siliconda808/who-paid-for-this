@@ -1,1 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Misogyny in Science</title>
 
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        color: #222;
+        background: white;
+        max-width: 850px;
+        margin: 60px auto;
+        padding: 0 24px;
+        line-height: 1.6;
+    }
+
+    h1 {
+        font-size: 32px;
+        margin-bottom: 8px;
+    }
+
+    .intro {
+        color: #666;
+        margin-bottom: 35px;
+    }
+
+    #search {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px;
+        font-size: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin: 15px 0 25px;
+    }
+
+    .study {
+        border-top: 1px solid #ddd;
+        padding: 22px 0;
+    }
+
+    .study h2 {
+        font-size: 19px;
+        line-height: 1.4;
+        margin: 0 0 8px;
+    }
+
+    .study h2 a {
+        color: #222;
+        text-decoration: none;
+    }
+
+    .study h2 a:hover {
+        text-decoration: underline;
+    }
+
+    .metadata {
+        color: #777;
+        font-size: 13px;
+        margin-bottom: 15px;
+    }
+
+    .abstract {
+        font-size: 14px;
+        line-height: 1.75;
+        white-space: pre-line;
+    }
+
+    .no-results {
+        color: #777;
+        padding: 20px 0;
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Misogyny in Science</h1>
+    <p class="intro">
+        A collection of scientific literature and published research.
+    </p>
+</header>
+
+<main>
+
+    <input
+        type="search"
+        id="search"
+        placeholder="Search papers or authors..."
+        aria-label="Search papers"
+    >
+
+    <div id="studies"></div>
+
+</main>
+
+<script>
+
+// ==========================================
+// ADD PAPERS HERE
+// Copy an entry and fill in the information.
+// ==========================================
+
+const studies = [
+
+    {
+        title: "Attractiveness of women with rectovaginal endometriosis: a case-control study",
+
+        authors: "Paolo Vercellini, Laura Buggio, Edgardo Somigliana, Giussy Barbara, Paola Viganò, Luigi Fedele",
+
+        year: "2013",
+
+        journal: "Fertility and Sterility",
+
+        abstract: `Objective: To evaluate physical attractiveness in women with and without endometriosis.
+
+Design: Case-control study.
+Setting: Academic hospital.
+Patient(s): Three hundred nulliparous women.
+Intervention(s): Assessment of attractiveness by four independent female and male observers.
+Main outcome measure(s): A graded attractiveness rating scale.
+Result(s): A total of 31 of 100 women in the rectovaginal endometriosis group (cases) were judged as attractive or very attractive, compared with 8 of 100 in the peritoneal and ovarian endometriosis group and 9 of 100 in the group of subjects without endometriosis. A higher proportion of cases first had intercourse before age 18 (53%, 39%, and 30%, respectively).
+The mean ± SD body mass index in women with rectovaginal endometriosis, in those with other disease forms, and in those without endometriosis was, respectively, 21.0 ± 2.5, 21.3 ± 3.3, and 22.1 ± 3.6. The median (interquartile range) waist-to-hip ratio and breast-to-underbreast ratio were, respectively, 0.75 (0.71-0.81), 0.76 (0.71-0.81), and 0.78 (0.73-0.83), and 1.15 (1.12-1.20), 1.14 (1.10-1.17), and 1.15 (1.11-1.18).
+Conclusion(s): Women with rectovaginal endometriosis were judged to be more attractive than those in the two control groups. Moreover, they had a leaner silhouette, larger breasts, and an earlier coitarche.`,
+
+        url: "https://pubmed.ncbi.nlm.nih.gov/22985951/"
+    }
+
+];
+
+
+// ==========================================
+// DISPLAY PAPERS
+// ==========================================
+
+function escapeHTML(text) {
+    return String(text ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[char]);
+}
+
+function displayStudies() {
+
+    const query = document
+        .getElementById("search")
+        .value
+        .toLowerCase();
+
+    const filtered = studies.filter(study => {
+
+        const text = [
+            study.title,
+            study.authors,
+            study.year,
+            study.journal,
+            study.abstract
+        ].join(" ").toLowerCase();
+
+        return text.includes(query);
+    });
+
+    const container = document.getElementById("studies");
+
+    if (filtered.length === 0) {
+        container.innerHTML =
+            '<p class="no-results">No papers found.</p>';
+        return;
+    }
+
+    container.innerHTML = filtered.map(study => `
+
+        <article class="study">
+
+            <h2>
+                <a href="${escapeHTML(study.url)}"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    ${escapeHTML(study.title)}
+                </a>
+            </h2>
+
+            <div class="metadata">
+                ${escapeHTML(study.authors)}
+                · ${escapeHTML(study.year)}
+                · ${escapeHTML(study.journal)}
+            </div>
+
+            <div class="abstract">
+                ${escapeHTML(study.abstract)}
+            </div>
+
+        </article>
+
+    `).join("");
+}
+
+
+// ==========================================
+// SEARCH
+// ==========================================
+
+document
+    .getElementById("search")
+    .addEventListener("input", displayStudies);
+
+
+// Initial display
+displayStudies();
+
+</script>
+
+</body>
+</html>
